@@ -1,0 +1,65 @@
+/* Lab 1: Threads example. (p.156)
+	Programmer: Linval Bailey
+	Date: September 6, 2019
+	Filename: Driver.java
+	Purpose: This is a program for the summation of a non-negative integer.
+			 Threads are the fundamental model of program executon in a java program. There 
+			 are two techniques for creating threads in a Java program. One approach is to create
+			 a new class that is derived from the Thread class and to override its run() method.
+			 An alternative -- and more commonly used -- technique is to define a class that implements
+			 the Runnable interface , with "void run()".
+			 This program "Driver" shows the java version of a multithreaded program that determines 
+			 the sumation of a non-negative integer. The Sumation class implements the Runnable
+			 interface. Thread creation is performed by creating an object instance of the Thread
+			 class and passing the constructor a Runnable object.
+*/
+
+//================================================================
+class sum{
+		private int sum;
+		public int getSum(){
+				return sum;
+		}
+		public void setSum(int sum){
+				this.sum=sum;
+		}
+	}
+	class Summation implements Runnable{
+			private int upper;
+			private sum sumValue;
+			
+			public Summation(int upper, sum sumValue){
+					this.upper = upper;
+					this.sumValue=sumValue;
+			}
+			
+			public void run(){
+					int sum = 0;
+					for (int i = 0; i <= upper; i++)
+							sum += i;
+					sumValue.setSum(sum);
+			}
+	}
+	//import java.util.Scanner;
+	public class Driver
+	{
+		public static void main(String[] args){
+				if (args.length> 0) {
+					if (Integer.parseInt(args[0])< 0)
+							System.err.println(args[0] + " must be >= 0.");
+					else {
+							//create the object to be shared 
+							sum sumObject = new sum();
+							int upper = Integer.parseInt(args[0]);
+							Thread thrd =  new Thread(new Summation (upper, sumObject));
+							thrd.start();
+							try {
+									thrd.join();
+									System.out.println("The sum of "+upper+" is "+sumObject.getSum());
+							} catch (InterruptedException ie){}
+					}
+				}
+					else
+						System.err.println("Usage: Summation <integer value>");
+			}//end of main
+		}//end of class
